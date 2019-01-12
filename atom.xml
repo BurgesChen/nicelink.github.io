@@ -5,9 +5,9 @@
   <subtitle>小白的技术成长之路</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="http://nicelink.top/"/>
   <updated>2019-01-04T12:34:03.936Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>http://nicelink.top/</id>
   
   <author>
     <name>Nice</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://yoursite.com/2019/01/07/test/"/>
-    <id>http://yoursite.com/2019/01/07/test/</id>
+    <link href="http://nicelink.top/2019/01/07/test/"/>
+    <id>http://nicelink.top/2019/01/07/test/</id>
     <published>2019-01-07T12:25:42.599Z</published>
     <updated>2019-01-04T12:34:03.936Z</updated>
     
@@ -39,8 +39,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://yoursite.com/2019/01/04/hello-world/"/>
-    <id>http://yoursite.com/2019/01/04/hello-world/</id>
+    <link href="http://nicelink.top/2019/01/04/hello-world/"/>
+    <id>http://nicelink.top/2019/01/04/hello-world/</id>
     <published>2019-01-04T12:34:03.936Z</published>
     <updated>2019-01-04T12:34:03.936Z</updated>
     
