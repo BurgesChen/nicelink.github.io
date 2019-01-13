@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext">
+  
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next1.png?v=6.7.0">
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="一、主机环境主机：Ubuntu16.04 LTS 64bit   i.MX6 bsp infomation：Bsp version:fsl-yocto-L4.1.15_2.0.0-ga ;Linux Kernel version: 4.1 ;Yocto Project version: 2.1 ;CPU type: i.MX6 DualLite 二、Yocto简介 Yocto：Yocto是一个开源">
+<meta name="keywords" content="yocto,Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="I.MX6 Linux Yocto开发环境搭建">
+<meta property="og:url" content="http://nicelink.top/2019/01/13/iMX6 Linux Yocto开发环境搭建/index.html">
+<meta property="og:site_name" content="Nice的个人博客">
+<meta property="og:description" content="一、主机环境主机：Ubuntu16.04 LTS 64bit   i.MX6 bsp infomation：Bsp version:fsl-yocto-L4.1.15_2.0.0-ga ;Linux Kernel version: 4.1 ;Yocto Project version: 2.1 ;CPU type: i.MX6 DualLite 二、Yocto简介 Yocto：Yocto是一个开源">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://nicelink.top/2019/01/13/iMX6%20Linux%20Yocto开发环境搭建/image-type.png">
+<meta property="og:updated_time" content="2019-01-13T10:53:08.380Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="I.MX6 Linux Yocto开发环境搭建">
+<meta name="twitter:description" content="一、主机环境主机：Ubuntu16.04 LTS 64bit   i.MX6 bsp infomation：Bsp version:fsl-yocto-L4.1.15_2.0.0-ga ;Linux Kernel version: 4.1 ;Yocto Project version: 2.1 ;CPU type: i.MX6 DualLite 二、Yocto简介 Yocto：Yocto是一个开源">
+<meta name="twitter:image" content="http://nicelink.top/2019/01/13/iMX6%20Linux%20Yocto开发环境搭建/image-type.png">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Nice的个人博客" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://nicelink.top/2019/01/13/iMX6 Linux Yocto开发环境搭建/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>I.MX6 Linux Yocto开发环境搭建 | Nice的个人博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Nice的个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">小白的技术成长之路</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nicelink.top/2019/01/13/iMX6 Linux Yocto开发环境搭建/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nice">
+      <meta itemprop="description" content="Nice的技术人生">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Nice的个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">I.MX6 Linux Yocto开发环境搭建
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-13 14:49:51 / 修改时间：18:53:08" itemprop="dateCreated datePublished" datetime="2019-01-13T14:49:51+08:00">2019-01-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux开发环境/" itemprop="url" rel="index"><span itemprop="name">Linux开发环境</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/01/13/iMX6 Linux Yocto开发环境搭建/#comments" itemprop="discussionUrl">
+                
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/01/13/iMX6 Linux Yocto开发环境搭建/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="一、主机环境"><a href="#一、主机环境" class="headerlink" title="一、主机环境"></a>一、主机环境</h2><p>主机：Ubuntu16.04 LTS 64bit  </p>
+<p>i.MX6 bsp infomation：<br>Bsp version:fsl-yocto-L4.1.15_2.0.0-ga ;<br>Linux Kernel version: 4.1 ;<br>Yocto Project version: 2.1 ;<br>CPU type: i.MX6 DualLite</p>
+<h2 id="二、Yocto简介"><a href="#二、Yocto简介" class="headerlink" title="二、Yocto简介"></a>二、Yocto简介</h2><ul>
+<li><p>Yocto：Yocto是一个开源社区它通过提供模版、工具和方法帮助开发者创建基于linux内核的定制系统，支持ARM, PPC, MIPS, x86 (32 &amp; 64 bit)硬件体系架构。</p>
+</li>
+<li><p>Poky：Poky有两个含义。第一个含义是用来构建Linux的构建系统，值得注意的该Poky仅仅是一个概念，而非一个实体：它包含了 BitBake工具、编译工具链、BSP、诸多程序包或层，可以认为Poky即是Yocto的本质；此外Poky还有另外一层意思，使用Poky系统得到的默认参考 Linux 发行版也叫Poky（当然，我们可以对此发行版随意命名），Poky的两个含义千万不能混淆。</p>
+</li>
+<li><p>Metadata：元数据集，所谓元数据集就是发行版内各基本元素的描述与来源 </p>
+</li>
+<li>Recipes：.bb/.bbappend文件，配方文件，描述了从哪获取软件源码，如何配置，如何编译。bbappend和bb的区别主要在于bbappend是基于bb的，功能是对相应的bb文件作补充和覆盖，有点类似于“重写”的概念。</li>
+<li><p>Class：.bbclass文件  </p>
+</li>
+<li><p>Configuration：.conf文件，即配置文件，我们可以用它来改变构建方式。</p>
+</li>
+<li><p>Layers：即各种meta-xxx目录，将Metadata按层进行分类，有助于项目的维护</p>
+</li>
+<li><p>Bitbake：一个任务执行引擎，用来解析并执行Metadata</p>
+</li>
+<li><p>Output：即各种输出的image。</p>
+</li>
+</ul>
+<p>==&gt;注：以上介绍来源网络</p>
+<h2 id="三、I-MX6-Yocto环境搭建和编译步骤"><a href="#三、I-MX6-Yocto环境搭建和编译步骤" class="headerlink" title="三、I.MX6 Yocto环境搭建和编译步骤"></a>三、I.MX6 Yocto环境搭建和编译步骤</h2><p>&emsp; &emsp;为了使环境搭建更快，下载软件包速度加快，安装好ubuntu后需要去配置其更新软件源，配置为国内的软件源，如：网易源、阿里源等。具体的配置过程可参考网络教程：<a href="https://jingyan.baidu.com/article/7f41ecec1b7a2e593d095ce6.html" target="_blank" rel="noopener">《Ubuntu14.04更新源》</a></p>
+<ol>
+<li><h3 id="Yocto环境安装"><a href="#Yocto环境安装" class="headerlink" title="Yocto环境安装"></a>Yocto环境安装</h3>&emsp; &emsp;ubuntu安装和配置准备就绪后，开始搭建I.MX6的yocto环境（参考I.MX6官方文档），该yocto工程官方推荐使用ubuntu12.04或ubuntu14.04版本的OS。==安装步骤如下：==</li>
+</ol>
+<p>（1）首先打开终端（快捷键：Ctrl+Alt+T），安装Yocto project 2.1的主机包软件，输入如下命令：<br>$ sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib<br>build-essential chrpath socat libsdl1.2-dev</p>
+<p>（2）安装yocto需要的软件包，输入如下命令：<br>$ sudo apt-get install libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc</p>
+<p>（3）安装I.MX层的uboot工具，ubuntu12.04主机和ubuntu14.04主机输入的命令不一样，如下：<br>ubuntu12.04主机安装命令：sudo apt-get install uboot-mkimage<br>ubuntu14.04主机安装命令：sudo apt-get install u-boot-tools</p>
+<p>（4）然后开始建立repo工具，Repo是在Git之上构建的工具，它使得管理包含多个存储库的项目变得更加容易，而这些存储库不需要位于同一服务器上。Repo很好地补充了Yocto项目的分层特性，使得用户可以更容易地将自己的层添加到BSP中。依次输入如下命令：<br>$ mkdir ~/bin<br>$ curl <a href="http://commondatastorage.googleapis.com/git-repo-downloads/repo" target="_blank" rel="noopener">http://commondatastorage.googleapis.com/git-repo-downloads/repo</a> &gt; ~/bin/repo<br>$ chmod a+x ~/bin/repo<br>$ export PATH=~/bin:$PATH</p>
+<p><font color="red" face="黑体">上述步骤的注意事项</font>：  </p>
+<ul>
+<li><p>输入上面第二条命令的时候是会提示失败的，因为那个http网址是google相关的网址，国内是访问不了的，需要使用VPN代理服务器访问，再输入命令：<br>&emsp; $ curl<a href="http://commondatastorage.googleapis.com/git-repo-downloads/repo" target="_blank" rel="noopener">http://commondatastorage.googleapis.com/git-repo-downloads/repo</a> &gt; ~/bin/repo </p>
+</li>
+<li><p><font color="red" face="黑体">注意</font>：如果没有VPN，可以使用国内清华源的repo下载网址替代，参考<a href="https://mirrors.tuna.tsinghua.edu.cn/help/git-repo/" target="_blank" rel="noopener">Git Repo 镜像使用帮助</a>，命令如下：<br>&emsp; $ curl <a href="https://mirrors.tuna.tsinghua.edu.cn/git/git-repo" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/git/git-repo</a> -o ~/bin/repo<br>下一步还要导入repo的环境变量，这样reposync才会去清华源下载相关软件包，命令如下：<br>&emsp; $ export REPO_URL=’<a href="https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&#39;" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&#39;</a></p>
+</li>
+</ul>
+<p>（5）然后开始设置Yocto工程的Git配置，输入如下命令：<br>$ git config –global user.name “Your Name”<br>$ git config –global user.email “Your Email”<br>$ git config –list  </p>
+<p>（6）创建bsp代码和工具的存放目录，在work目录（我这里存放bsp的目录是work，可以自己随意调整存放目录）下创建一个fsl-release-bsp目录，然后进入该目录：<br>$ mkdir /work/fsl-release-bsp<br>$ cd /work/fsl-release-bsp</p>
+<p>（7）然后使用repo同步命令去更新和下载代码，同步和下载的速度视VPN的网速而定，命令如下：<br>repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth<br>repo sync </p>
+<h3 id="2-编译yocto工程"><a href="#2-编译yocto工程" class="headerlink" title="2.编译yocto工程"></a>2.编译yocto工程</h3><p>（1）首先是构建交叉编译环境，Freescale官方提供了一个 fsl-setup-release.sh来设置交叉编译环境，需要指定的特定机器的名称以及所需的图形后端，脚本设置指定机器和后端的目录和配置文件。<br>MACHINE选项用于指定板子和    CPU名称，最新的机器名称如下：<br>• imx6qpsabreauto<br>• imx6qpsabresd<br>• imx6ulevk<br>• imx6ull14x14evk<br>• imx6ull9x9evk<br>• imx6dlsabreauto<br>• imx6dlsabresd<br>• imx6qsabreauto<br>• imx6qsabresd<br>• imx6slevk<br>• imx6solosabreauto<br>• imx6solosabresd<br>• imx6sxsabresd<br>• imx6sxsabreauto<br>• imx7dsabresd  </p>
+<p>&emsp; &emsp;DISTRO配置选项，用于指定后端图像配置，如果你没有指定DISTRO，那在最后用-e 选项指定也可以，可以支持的后端图像有：<br>• fsl-imx-x11 - Only X11 graphics<br>• fsl-imx-wayland - Wayland weston graphics<br>• fsl-imx-xwayland - Wayland graphics and X11. X11 applications using EGL are not supported<br>• fsl-imx-fb - Frame Buffer graphics - no X11 or Wayland  </p>
+<p>-b 选项用于指定构建目录</p>
+<p>（2）配置命令如下</p>
+<p>$ DISTRO=fsl-imx-wayland MACHINE=imx6dlsabresd source fsl-setup-release.sh -b imx6dlsabresd-build-wayland</p>
+<p>（3）选择要编译的镜像类型<br>可选的镜像类型如下图所示：<br><img src="/2019/01/13/iMX6 Linux Yocto开发环境搭建/image-type.png" alt="image-type"><br>我这里选择的是 fsl-image-gui，编译命令如下：<br>$ bitbake fsl-image-gui</p>
+<p><font color="red" face="黑体">注意</font>：：如果想要离线编译（无网络情况下），可以先选择先下载编译项所需要的pack再去编译，fetchall命令如下：<br>$ bitbake fsl-image-gui -c fetchall<br>&emsp; &emsp;然后就静静的等待其编译完成，编译需要漫长的等待，如果出错，查看错误后继续尝试，最好是用VPN网络。<br>&emsp; &emsp;如果想要编译速度更快，可以修改/fsl-release-bsp/build（创建的构建目录）/conf/local.conf文件，添加如下内容，数字代表同时执行的编译任务数目： BB_NUMBER_THREADS = ‘4’<br>PARALLEL_MAKE = ‘-j 4’</p>
+<p>&emsp; &emsp;重新打开终端时，进入build，需要先导入环境变量才能去编译，输入如下命令：<br>$ source setup-environment imx6qsabresd-build-wayland/  </p>
+<h3 id="3-安装交叉编译工具链"><a href="#3-安装交叉编译工具链" class="headerlink" title="3.安装交叉编译工具链"></a>3.安装交叉编译工具链</h3><p>（1）输入编译工具链命令：<br>$ bitbake meta-toolchain  </p>
+<p>（2）等待编译完成后，进行到 tmp/deploy/sdk目录运行脚本安装，输入如下命令：<br>$ cd tmp/deploy/sdk<br>$ ./fsl-imx-wayland-glibc-x86_64-meta-toolchain-cortexa9hf-neon-toolchain-4.1.15-2.1.0.sh  </p>
+<p>（3）会出现提示如下，选择安装目录（默认），敲回车即可。<br>Enter target directory for SDK (default: /opt/fsl-imx-wayland/4.1.15-2.1.0): （<strong>回车，选择默认安装路径</strong>）<br>The directory “/opt/fsl-imx-fb/4.1.15-1.2.0” already contains a SDK for this architecture.<br>If you continue, existing files will be overwritten! Proceed[y/N]? y  </p>
+<p>（4）安装完成后，按照提示导入环境变量，输入如下命令：</p>
+<p>$ . /opt/fsl-imx-wayland/4.1.15-2.1.0/environment-setup-cortexa9hf-neon-poky-linux-gnueabi  </p>
+<p>&emsp; &emsp;导入环境变量后，输入env命令可以看到如下项：<br>CC=arm-poky-linux-gnueabi-gcc  -march=armv7-a -mfpu=neon  -mfloat-abi=hard -mcpu=cortex-a9 –sysroot=/opt/fsl-imx-wayland/4.1.15-2.1.0/sysroots/cortexa9hf-neon-poky-linux-gnueabi<br>&emsp; &emsp;后面我们就可以使用$CC来编译自己的程序放在ARM机器上运行。</p>
+<p>（5）helloworld程序测试</p>
+<ul>
+<li>编译命令：$CC hello.c -o hello  </li>
+<li>编译完后，可以使用file命令查看文件属性：<br>$ file hello<br>属性显示如下：<br>hello: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 2.6.32, BuildID[sha1]=e03e10e95a24ad4f1c23c92962131db3d71f652b, not stripped  </li>
+</ul>
+<h2 id="三、I-MX6-Yocto环境编译总结"><a href="#三、I-MX6-Yocto环境编译总结" class="headerlink" title="三、I.MX6 Yocto环境编译总结"></a>三、I.MX6 Yocto环境编译总结</h2><p>&emsp; &emsp;编译过程中会出现各种各样的错误，不要放弃，上网查找原因和解决办法，很多错误是由于网络问题或者网址变更，没有将pack下载下来。一些错误总结如下：  </p>
+<p>（1）do_fetch failed错误<br>&emsp; &emsp;在git fetch失败的时候，我们可以查看对应包的<em>.bb文件中的SRC_URI项（不同的pack源码下载网址），可以去那个网址手动下载，或者git clone下来，放到指定目录，然后去修改</em>.bb文件中的SRC_URI项。<br>具体操作步骤可以参考下网址文章：<br><a href="https://blog.csdn.net/groundhappy/article/details/55046166" target="_blank" rel="noopener">https://blog.csdn.net/groundhappy/article/details/55046166</a><br><a href="https://blog.csdn.net/sy373466062/article/details/50363537" target="_blank" rel="noopener">https://blog.csdn.net/sy373466062/article/details/50363537</a></p>
+<p>(2). 单独编译指令  </p>
+<ul>
+<li>配置menuconfig指令：<br>&emsp; &emsp;bitbake -c menuconfig -v linux-imx   </li>
+<li><p>单独编译kernel、模块、设备树：<br>&emsp; &emsp;bitbake -c compile -f -v linux-imx<br>&emsp; &emsp;bitbake linux-imx -c compile_kernelmodules -f -v<br>&emsp; &emsp;bitbake -c deploy -f -v linux-imx  </p>
+</li>
+<li><p>若要编译文件系统则用下面总指令：<br>&emsp; &emsp;bitbake core-image-minimal<br>&emsp; &emsp;bitbake -c compile -f -v u-boot-imx<br>&emsp; &emsp;bitbake -c deploy -f -v u-boot-imx  </p>
+</li>
+</ul>
+<h2 id="四、参考内容"><a href="#四、参考内容" class="headerlink" title="四、参考内容"></a>四、参考内容</h2><ul>
+<li>《i.MX_Yocto_Project_User’s_Guide.pdf》</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="Nice 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Nice 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/yocto/" rel="tag"># yocto</a>
+          
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/13/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Nice">
+            
+              <p class="site-author-name" itemprop="name">Nice</p>
+              <p class="site-description motion-element" itemprop="description">Nice的技术人生</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/Nice2Link" title="GitHub &rarr; https://github.com/Nice2Link" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://gitee.com/Nice2Link" title="Gitee &rarr; https://gitee.com/Nice2Link" rel="noopener" target="_blank"><i class="fa fa-fw fa-gitee"></i>Gitee</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://sourcelink.top" title="http://sourcelink.top" rel="noopener" target="_blank">Sourcelink</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、主机环境"><span class="nav-number">1.</span> <span class="nav-text">一、主机环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、Yocto简介"><span class="nav-number">2.</span> <span class="nav-text">二、Yocto简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、I-MX6-Yocto环境搭建和编译步骤"><span class="nav-number">3.</span> <span class="nav-text">三、I.MX6 Yocto环境搭建和编译步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Yocto环境安装"><span class="nav-number">3.1.</span> <span class="nav-text">Yocto环境安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-编译yocto工程"><span class="nav-number">3.2.</span> <span class="nav-text">2.编译yocto工程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-安装交叉编译工具链"><span class="nav-number">3.3.</span> <span class="nav-text">3.安装交叉编译工具链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、I-MX6-Yocto环境编译总结"><span class="nav-number">4.</span> <span class="nav-text">三、I.MX6 Yocto环境编译总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、参考内容"><span class="nav-number">5.</span> <span class="nav-text">四、参考内容</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 – <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nice</span>
+
+  
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/three/three.min.js"></script>
+
+  
+  <script src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+  
+    <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+  
+
+  
+    <script>
+      var disqus_config = function () {
+        this.page.url = "http://nicelink.top/2019/01/13/iMX6 Linux Yocto开发环境搭建/";
+        this.page.identifier = "2019/01/13/iMX6 Linux Yocto开发环境搭建/";
+        this.page.title = 'I.MX6 Linux Yocto开发环境搭建';
+        };
+      function loadComments () {
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+      
+        loadComments();
+      
+    </script>
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  <script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  <script>
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(function (item) {
+      return GUEST.indexOf(item) > -1;
+    });
+    new Valine({
+      el: '#comments' ,
+      verify: false,
+      notify: false,
+      appId: '0FGouB739qT1P4hwiNbzt66t-gzGzoHsz',
+      appKey: 'QWcsPpwpPtTtS9KQT5Ryg72B',
+      placeholder: 'Just go go',
+      avatar: 'mm',
+      meta:guest,
+      pageSize: '10' || 10,
+      visitor: false
+    });
+  </script>
+
+
+
+
+  
+
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+      }
+      else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

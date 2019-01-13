@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Nice的个人博客</title>
+  
+  <subtitle>小白的技术成长之路</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://nicelink.top/"/>
+  <updated>2019-01-13T10:53:08.380Z</updated>
+  <id>http://nicelink.top/</id>
+  
+  <author>
+    <name>Nice</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>I.MX6 Linux Yocto开发环境搭建</title>
+    <link href="http://nicelink.top/2019/01/13/iMX6%20Linux%20Yocto%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+    <id>http://nicelink.top/2019/01/13/iMX6 Linux Yocto开发环境搭建/</id>
+    <published>2019-01-13T06:49:51.807Z</published>
+    <updated>2019-01-13T10:53:08.380Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="一、主机环境"><a href="#一、主机环境" class="headerlink" title="一、主机环境"></a>一、主机环境</h2><p>主机：Ubuntu16.04 LTS 64bit  </p><p>i.MX6 bsp infomation：<br>Bsp version:fsl-yocto-L4.1.15_2.0.0-ga ;<br>Linux Kernel version: 4.1 ;<br>Yocto Project version: 2.1 ;<br>CPU type: i.MX6 DualLite</p><h2 id="二、Yocto简介"><a href="#二、Yocto简介" class="headerlink" title="二、Yocto简介"></a>二、Yocto简介</h2><ul><li><p>Yocto：Yocto是一个开源社区它通过提供模版、工具和方法帮助开发者创建基于linux内核的定制系统，支持ARM, PPC, MIPS, x86 (32 &amp; 64 bit)硬件体系架构。</p></li><li><p>Poky：Poky有两个含义。第一个含义是用来构建Linux的构建系统，值得注意的该Poky仅仅是一个概念，而非一个实体：它包含了 BitBake工具、编译工具链、BSP、诸多程序包或层，可以认为Poky即是Yocto的本质；此外Poky还有另外一层意思，使用Poky系统得到的默认参考 Linux 发行版也叫Poky（当然，我们可以对此发行版随意命名），Poky的两个含义千万不能混淆。</p></li><li><p>Metadata：元数据集，所谓元数据集就是发行版内各基本元素的描述与来源 </p></li><li>Recipes：.bb/.bbappend文件，配方文件，描述了从哪获取软件源码，如何配置，如何编译。bbappend和bb的区别主要在于bbappend是基于bb的，功能是对相应的bb文件作补充和覆盖，有点类似于“重写”的概念。</li><li><p>Class：.bbclass文件  </p></li><li><p>Configuration：.conf文件，即配置文件，我们可以用它来改变构建方式。</p></li><li><p>Layers：即各种meta-xxx目录，将Metadata按层进行分类，有助于项目的维护</p></li><li><p>Bitbake：一个任务执行引擎，用来解析并执行Metadata</p></li><li><p>Output：即各种输出的image。</p></li></ul><p>==&gt;注：以上介绍来源网络</p><h2 id="三、I-MX6-Yocto环境搭建和编译步骤"><a href="#三、I-MX6-Yocto环境搭建和编译步骤" class="headerlink" title="三、I.MX6 Yocto环境搭建和编译步骤"></a>三、I.MX6 Yocto环境搭建和编译步骤</h2><p>&emsp; &emsp;为了使环境搭建更快，下载软件包速度加快，安装好ubuntu后需要去配置其更新软件源，配置为国内的软件源，如：网易源、阿里源等。具体的配置过程可参考网络教程：<a href="https://jingyan.baidu.com/article/7f41ecec1b7a2e593d095ce6.html" target="_blank" rel="noopener">《Ubuntu14.04更新源》</a></p><ol><li><h3 id="Yocto环境安装"><a href="#Yocto环境安装" class="headerlink" title="Yocto环境安装"></a>Yocto环境安装</h3>&emsp; &emsp;ubuntu安装和配置准备就绪后，开始搭建I.MX6的yocto环境（参考I.MX6官方文档），该yocto工程官方推荐使用ubuntu12.04或ubuntu14.04版本的OS。==安装步骤如下：==</li></ol><p>（1）首先打开终端（快捷键：Ctrl+Alt+T），安装Yocto project 2.1的主机包软件，输入如下命令：<br>$ sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib<br>build-essential chrpath socat libsdl1.2-dev</p><p>（2）安装yocto需要的软件包，输入如下命令：<br>$ sudo apt-get install libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc</p><p>（3）安装I.MX层的uboot工具，ubuntu12.04主机和ubuntu14.04主机输入的命令不一样，如下：<br>ubuntu12.04主机安装命令：sudo apt-get install uboot-mkimage<br>ubuntu14.04主机安装命令：sudo apt-get install u-boot-tools</p><p>（4）然后开始建立repo工具，Repo是在Git之上构建的工具，它使得管理包含多个存储库的项目变得更加容易，而这些存储库不需要位于同一服务器上。Repo很好地补充了Yocto项目的分层特性，使得用户可以更容易地将自己的层添加到BSP中。依次输入如下命令：<br>$ mkdir ~/bin<br>$ curl <a href="http://commondatastorage.googleapis.com/git-repo-downloads/repo" target="_blank" rel="noopener">http://commondatastorage.googleapis.com/git-repo-downloads/repo</a> &gt; ~/bin/repo<br>$ chmod a+x ~/bin/repo<br>$ export PATH=~/bin:$PATH</p><p><font color="red" face="黑体">上述步骤的注意事项</font>：  </p><ul><li><p>输入上面第二条命令的时候是会提示失败的，因为那个http网址是google相关的网址，国内是访问不了的，需要使用VPN代理服务器访问，再输入命令：<br>&emsp; $ curl<a href="http://commondatastorage.googleapis.com/git-repo-downloads/repo" target="_blank" rel="noopener">http://commondatastorage.googleapis.com/git-repo-downloads/repo</a> &gt; ~/bin/repo </p></li><li><p><font color="red" face="黑体">注意</font>：如果没有VPN，可以使用国内清华源的repo下载网址替代，参考<a href="https://mirrors.tuna.tsinghua.edu.cn/help/git-repo/" target="_blank" rel="noopener">Git Repo 镜像使用帮助</a>，命令如下：<br>&emsp; $ curl <a href="https://mirrors.tuna.tsinghua.edu.cn/git/git-repo" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/git/git-repo</a> -o ~/bin/repo<br>下一步还要导入repo的环境变量，这样reposync才会去清华源下载相关软件包，命令如下：<br>&emsp; $ export REPO_URL=’<a href="https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&#39;" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/git/git-repo/&#39;</a></p></li></ul><p>（5）然后开始设置Yocto工程的Git配置，输入如下命令：<br>$ git config –global user.name “Your Name”<br>$ git config –global user.email “Your Email”<br>$ git config –list  </p><p>（6）创建bsp代码和工具的存放目录，在work目录（我这里存放bsp的目录是work，可以自己随意调整存放目录）下创建一个fsl-release-bsp目录，然后进入该目录：<br>$ mkdir /work/fsl-release-bsp<br>$ cd /work/fsl-release-bsp</p><p>（7）然后使用repo同步命令去更新和下载代码，同步和下载的速度视VPN的网速而定，命令如下：<br>repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth<br>repo sync </p><h3 id="2-编译yocto工程"><a href="#2-编译yocto工程" class="headerlink" title="2.编译yocto工程"></a>2.编译yocto工程</h3><p>（1）首先是构建交叉编译环境，Freescale官方提供了一个 fsl-setup-release.sh来设置交叉编译环境，需要指定的特定机器的名称以及所需的图形后端，脚本设置指定机器和后端的目录和配置文件。<br>MACHINE选项用于指定板子和    CPU名称，最新的机器名称如下：<br>• imx6qpsabreauto<br>• imx6qpsabresd<br>• imx6ulevk<br>• imx6ull14x14evk<br>• imx6ull9x9evk<br>• imx6dlsabreauto<br>• imx6dlsabresd<br>• imx6qsabreauto<br>• imx6qsabresd<br>• imx6slevk<br>• imx6solosabreauto<br>• imx6solosabresd<br>• imx6sxsabresd<br>• imx6sxsabreauto<br>• imx7dsabresd  </p><p>&emsp; &emsp;DISTRO配置选项，用于指定后端图像配置，如果你没有指定DISTRO，那在最后用-e 选项指定也可以，可以支持的后端图像有：<br>• fsl-imx-x11 - Only X11 graphics<br>• fsl-imx-wayland - Wayland weston graphics<br>• fsl-imx-xwayland - Wayland graphics and X11. X11 applications using EGL are not supported<br>• fsl-imx-fb - Frame Buffer graphics - no X11 or Wayland  </p><p>-b 选项用于指定构建目录</p><p>（2）配置命令如下</p><p>$ DISTRO=fsl-imx-wayland MACHINE=imx6dlsabresd source fsl-setup-release.sh -b imx6dlsabresd-build-wayland</p><p>（3）选择要编译的镜像类型<br>可选的镜像类型如下图所示：<br><img src="/2019/01/13/iMX6 Linux Yocto开发环境搭建/image-type.png" alt="image-type"><br>我这里选择的是 fsl-image-gui，编译命令如下：<br>$ bitbake fsl-image-gui</p><p><font color="red" face="黑体">注意</font>：：如果想要离线编译（无网络情况下），可以先选择先下载编译项所需要的pack再去编译，fetchall命令如下：<br>$ bitbake fsl-image-gui -c fetchall<br>&emsp; &emsp;然后就静静的等待其编译完成，编译需要漫长的等待，如果出错，查看错误后继续尝试，最好是用VPN网络。<br>&emsp; &emsp;如果想要编译速度更快，可以修改/fsl-release-bsp/build（创建的构建目录）/conf/local.conf文件，添加如下内容，数字代表同时执行的编译任务数目： BB_NUMBER_THREADS = ‘4’<br>PARALLEL_MAKE = ‘-j 4’</p><p>&emsp; &emsp;重新打开终端时，进入build，需要先导入环境变量才能去编译，输入如下命令：<br>$ source setup-environment imx6qsabresd-build-wayland/  </p><h3 id="3-安装交叉编译工具链"><a href="#3-安装交叉编译工具链" class="headerlink" title="3.安装交叉编译工具链"></a>3.安装交叉编译工具链</h3><p>（1）输入编译工具链命令：<br>$ bitbake meta-toolchain  </p><p>（2）等待编译完成后，进行到 tmp/deploy/sdk目录运行脚本安装，输入如下命令：<br>$ cd tmp/deploy/sdk<br>$ ./fsl-imx-wayland-glibc-x86_64-meta-toolchain-cortexa9hf-neon-toolchain-4.1.15-2.1.0.sh  </p><p>（3）会出现提示如下，选择安装目录（默认），敲回车即可。<br>Enter target directory for SDK (default: /opt/fsl-imx-wayland/4.1.15-2.1.0): （<strong>回车，选择默认安装路径</strong>）<br>The directory “/opt/fsl-imx-fb/4.1.15-1.2.0” already contains a SDK for this architecture.<br>If you continue, existing files will be overwritten! Proceed[y/N]? y  </p><p>（4）安装完成后，按照提示导入环境变量，输入如下命令：</p><p>$ . /opt/fsl-imx-wayland/4.1.15-2.1.0/environment-setup-cortexa9hf-neon-poky-linux-gnueabi  </p><p>&emsp; &emsp;导入环境变量后，输入env命令可以看到如下项：<br>CC=arm-poky-linux-gnueabi-gcc  -march=armv7-a -mfpu=neon  -mfloat-abi=hard -mcpu=cortex-a9 –sysroot=/opt/fsl-imx-wayland/4.1.15-2.1.0/sysroots/cortexa9hf-neon-poky-linux-gnueabi<br>&emsp; &emsp;后面我们就可以使用$CC来编译自己的程序放在ARM机器上运行。</p><p>（5）helloworld程序测试</p><ul><li>编译命令：$CC hello.c -o hello  </li><li>编译完后，可以使用file命令查看文件属性：<br>$ file hello<br>属性显示如下：<br>hello: ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 2.6.32, BuildID[sha1]=e03e10e95a24ad4f1c23c92962131db3d71f652b, not stripped  </li></ul><h2 id="三、I-MX6-Yocto环境编译总结"><a href="#三、I-MX6-Yocto环境编译总结" class="headerlink" title="三、I.MX6 Yocto环境编译总结"></a>三、I.MX6 Yocto环境编译总结</h2><p>&emsp; &emsp;编译过程中会出现各种各样的错误，不要放弃，上网查找原因和解决办法，很多错误是由于网络问题或者网址变更，没有将pack下载下来。一些错误总结如下：  </p><p>（1）do_fetch failed错误<br>&emsp; &emsp;在git fetch失败的时候，我们可以查看对应包的<em>.bb文件中的SRC_URI项（不同的pack源码下载网址），可以去那个网址手动下载，或者git clone下来，放到指定目录，然后去修改</em>.bb文件中的SRC_URI项。<br>具体操作步骤可以参考下网址文章：<br><a href="https://blog.csdn.net/groundhappy/article/details/55046166" target="_blank" rel="noopener">https://blog.csdn.net/groundhappy/article/details/55046166</a><br><a href="https://blog.csdn.net/sy373466062/article/details/50363537" target="_blank" rel="noopener">https://blog.csdn.net/sy373466062/article/details/50363537</a></p><p>(2). 单独编译指令  </p><ul><li>配置menuconfig指令：<br>&emsp; &emsp;bitbake -c menuconfig -v linux-imx   </li><li><p>单独编译kernel、模块、设备树：<br>&emsp; &emsp;bitbake -c compile -f -v linux-imx<br>&emsp; &emsp;bitbake linux-imx -c compile_kernelmodules -f -v<br>&emsp; &emsp;bitbake -c deploy -f -v linux-imx  </p></li><li><p>若要编译文件系统则用下面总指令：<br>&emsp; &emsp;bitbake core-image-minimal<br>&emsp; &emsp;bitbake -c compile -f -v u-boot-imx<br>&emsp; &emsp;bitbake -c deploy -f -v u-boot-imx  </p></li></ul><h2 id="四、参考内容"><a href="#四、参考内容" class="headerlink" title="四、参考内容"></a>四、参考内容</h2><ul><li>《i.MX_Yocto_Project_User’s_Guide.pdf》</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;一、主机环境&quot;&gt;&lt;a href=&quot;#一、主机环境&quot; class=&quot;headerlink&quot; title=&quot;一、主机环境&quot;&gt;&lt;/a&gt;一、主机环境&lt;/h2&gt;&lt;p&gt;主机：Ubuntu16.04 LTS 64bit  &lt;/p&gt;
+&lt;p&gt;i.MX6 bsp infomation
+      
+    
+    </summary>
+    
+      <category term="Linux开发环境" scheme="http://nicelink.top/categories/Linux%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/"/>
+    
+    
+      <category term="yocto" scheme="http://nicelink.top/tags/yocto/"/>
+    
+      <category term="Linux" scheme="http://nicelink.top/tags/Linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://nicelink.top/2019/01/13/hello-world/"/>
+    <id>http://nicelink.top/2019/01/13/hello-world/</id>
+    <published>2019-01-13T06:49:51.806Z</published>
+    <updated>2019-01-13T06:49:51.807Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
